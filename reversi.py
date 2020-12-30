@@ -36,7 +36,7 @@ class Position:
 # ===========
 class Board:
     # 8方向のYXの加算値
-    DIR = [[-1, -1], [-1, 0], [-1,1],
+    DIR = [[-1, -1], [-1, 0], [-1, 1],
            [0, -1],           [0, 1],
            [1, -1],  [1, 0],  [1, 1]]
 
@@ -78,21 +78,21 @@ class Board:
         if self.board[position.y][position.x] != SPACE:
             return False
 
-            #各方向に石をひっくり返せるか？
-            for dir in Board.DIR:
-                y = position.y + dir[0]
-                x = position.x + dir[1]
-                if y >= 0 and x >= 0 and y < 8 and x < 8 and self.board[y][x] == -self.turn:
-                    # 隣が相手の石
+        #各方向に石をひっくり返せるか？
+        for dir in Board.DIR:
+            y = position.y + dir[0]
+            x = position.x + dir[1]
+            if y >= 0 and x >= 0 and y < 8 and x < 8 and self.board[y][x] == -self.turn:
+                # 隣が相手の石
+                y += dir[0]
+                x += dir[1]
+                while y >= 0 and x >= 0 and y < 8 and x < 8 and self.board[y][x] == -self.turn:
                     y += dir[0]
                     x += dir[1]
-                    while y >= 0 and x >= 0 and y < 8 and x < 8 and self.board[y][x] == -self.turn:
-                        y += dir[0]
-                        x += dir[1]
-                        if y >= 0 and x >= 0 and y < 8 and x < 8 and self.board[y][x] == self.turn:
-                            return True
+                if y >= 0 and x >= 0 and y < 8 and x < 8 and self.board[y][x] == self.turn:
+                    return True
 
-                    return False
+        return False
     # 石を打てるマスのリストを返す
     def get_move_list(self):
         move_list = []
@@ -111,7 +111,7 @@ class Board:
 
         #石をひっくり返す
         #各方向に石をひっくり返せるか調べる
-        for dir in BOARD.DIR:
+        for dir in Board.DIR:
             y = position.y + dir[0]
             x = position.x + dir[1]
             if y >= 0 and x >= 0 and y < 8 and x < 8 and self.board[y][x] == -self.turn:
@@ -132,8 +132,8 @@ class Board:
                         y -= dir[0]
                         x -= dir[1]
 
-                self.turn = -self.turn #手番を変更
-                self.move_num += 1 # 手番を増やす
+        self.turn = -self.turn #手番を変更
+        self.move_num += 1 # 手番を増やす
 
     # パスする
     def move_pass(self):
@@ -149,7 +149,7 @@ class Board:
         # 黒白の石数をタプルで取得
         (black_discs, white_discs) = self.get_discs()
         if black_discs == 0 or white_discs == 0:
-                return True
+            return True
 
         # 黒白どちらも手がない場合
         move_list1 = self.get_move_list()
@@ -220,8 +220,8 @@ class Game:
                 self.game_move(position) # 局面を進める
                 if self.game_mode == 2:
                     break #対局終了していたら抜ける
-                else:
-                    break
+            else:
+                break
 
 #-------------------------------------
 # AIクラス
@@ -233,7 +233,7 @@ class AI:
         move_list = board.get_move_list()
         # ランダムに指手を選ぶ
         r = random.randint(0, len(move_list) -1)
-        return move_list(r)
+        return move_list[r]
 
 #-------------------------------------
 # UI関数
@@ -319,7 +319,7 @@ def play_start():
 
 #盤面がクリックされた時
 def click_board(event):
-    global game_mode
+    global game
     if game.game_mode != 1:
         messagebox.showinfo(u"", u"対局を開始してください")
         return
@@ -370,7 +370,7 @@ black_rdo0.place(x = 70, y = 4)
 black_rdo1 = tkinter.Radiobutton(root, value = 1, variable = black_var, text = u"コンピュータ")
 black_rdo1.place(x = 160, y = 4)
 
-white_label = tkinter.Label(text=u"後手●")
+white_label = tkinter.Label(text=u"後手○")
 white_label.place(x = 16, y = 24)
 white_var = tkinter.IntVar()
 white_rdo0 = tkinter.Radiobutton(root, value = 0, variable = white_var, text = u"プレイヤー")
